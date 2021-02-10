@@ -12,7 +12,7 @@ MAINTAINER hihouhou < hihouhou@hihouhou.com >
 ENV GOROOT /usr/local/go
 ENV GOPATH /opt/prometheus
 ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
-ENV PROMETHEUS_VERSION v2.22.2
+ENV PROMETHEUS_VERSION v2.24.1
 ENV GO_VERSION 1.15.2
 ENV USER ROOT
 
@@ -43,10 +43,15 @@ RUN mkdir -p $GOPATH/src/github.com/prometheus && \
 #    tar xf  ${PROMETHEUS_VERSION}.tar.gz --strip-components=1 && \
     make build
 
+RUN useradd -ms /bin/bash prometheus
+
+USER prometheus
+
 EXPOSE 9090
 
 WORKDIR $GOPATH/src/github.com/prometheus
 
 COPY your_config.yml your_config.yml
+COPY rules.yml rules.yml
 
-CMD ["./prometheus", "--config.file=your_config.yml"] 
+CMD ["./prometheus/prometheus", "--config.file=your_config.yml", "--storage.tsdb.path=/srv/prometheus"] 
