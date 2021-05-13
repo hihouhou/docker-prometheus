@@ -53,4 +53,4 @@ WORKDIR $GOPATH/src/github.com/prometheus
 
 COPY your_config.yml your_config.yml
 
-CMD ["./prometheus/prometheus", "--config.file=your_config.yml", "--storage.tsdb.path=/srv/prometheus"] 
+CMD ["./prometheus", "--config.file=your_config.yml"]
