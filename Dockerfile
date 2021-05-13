@@ -39,10 +39,8 @@ RUN wget https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.g
 # Get prometheus from github
 RUN mkdir -p $GOPATH/src/github.com/prometheus && \
     cd $GOPATH/src/github.com/prometheus && \
-    git clone https://github.com/prometheus/prometheus.git && \
+    git clone --branch ${PROMETHEUS_VERSION} https://github.com/prometheus/prometheus.git && \
     cd prometheus && \
-#    wget https://api.github.com/repos/prometheus/prometheus/tarball/${PROMETHEUS_VERSION} -O ${PROMETHEUS_VERSION}.tar.gz && \
-#    tar xf  ${PROMETHEUS_VERSION}.tar.gz --strip-components=1 && \
     make build
 
 RUN useradd -ms /bin/bash prometheus
@@ -54,6 +52,5 @@ EXPOSE 9090
 WORKDIR $GOPATH/src/github.com/prometheus
 
 COPY your_config.yml your_config.yml
-COPY rules.yml rules.yml
 
-CMD ["./prometheus", "--config.file=your_config.yml"]
+CMD ["./prometheus/prometheus", "--config.file=your_config.yml", "--storage.tsdb.path=/srv/prometheus"] 
