@@ -20,6 +20,9 @@ ENV USER ROOT
 RUN apt-get update && \
     apt-get install -y wget git make build-essential curl
 
+#Add yarn repository
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+
 # Add yarn repository
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
@@ -27,7 +30,6 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 # Update & install packages yarn
 RUN apt-get update && \
     apt-get install -y yarn
-
 
 # Get go
 RUN wget https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz && \
