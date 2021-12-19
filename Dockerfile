@@ -13,7 +13,7 @@ ENV GOROOT /usr/local/go
 ENV GOPATH /opt/prometheus
 ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
 ENV PROMETHEUS_VERSION v2.32.1
-ENV GO_VERSION 1.16.4
+ENV GO_VERSION 1.17.1
 ENV USER ROOT
 
 # Update & install packages for prometheus build
@@ -21,7 +21,7 @@ RUN apt-get update && \
     apt-get install -y wget git make build-essential curl
 
 #Add yarn repository
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 
 # Add yarn repository
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
