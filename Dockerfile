@@ -13,7 +13,7 @@ ENV GOROOT /usr/local/go
 ENV GOPATH /opt/prometheus
 ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
 ENV PROMETHEUS_VERSION v2.40.3
-ENV GO_VERSION 1.17.1
+ENV GO_VERSION 1.19.3
 ENV USER ROOT
 
 # Update & install packages for prometheus build
