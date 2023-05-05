@@ -12,7 +12,7 @@ MAINTAINER hihouhou < hihouhou@hihouhou.com >
 ENV GOROOT /usr/local/go
 ENV GOPATH /opt/prometheus
 ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
-ENV PROMETHEUS_VERSION v2.43.1+stringlabels
+ENV PROMETHEUS_VERSION v2.37.8
 ENV GO_VERSION 1.19.3
 ENV USER ROOT
 
