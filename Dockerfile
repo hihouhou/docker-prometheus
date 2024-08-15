@@ -7,14 +7,14 @@
 # Pull base image.
 FROM debian:latest
 
-MAINTAINER hihouhou < hihouhou@hihouhou.com >
+LABEL org.opencontainers.image.authors="hihouhou < hihouhou@hihouhou.com >"
 
-ENV GOROOT /usr/local/go
-ENV GOPATH /opt/prometheus
-ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
-ENV PROMETHEUS_VERSION v2.54.0
-ENV GO_VERSION 1.19.3
-ENV USER ROOT
+ENV GOROOT=/usr/local/go
+ENV GOPATH=/opt/prometheus
+ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+ENV PROMETHEUS_VERSION=v2.54.0
+ENV GO_VERSION=1.23.0
+ENV USER=ROOT
 
 # Update & install packages for prometheus build
 RUN apt-get update && \
@@ -52,5 +52,6 @@ EXPOSE 9090
 WORKDIR $GOPATH/src/github.com/prometheus
 
 COPY your_config.yml your_config.yml
+COPY rules.yml rules.yml
 
-CMD ["./prometheus", "--config.file=your_config.yml"]
+CMD ["./prometheus/prometheus", "--config.file=your_config.yml", "--storage.tsdb.path=/srv/prometheus"]
