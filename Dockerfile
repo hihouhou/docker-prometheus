@@ -21,7 +21,7 @@ RUN apt-get update && \
     apt-get install -y wget git make build-essential curl
 
 #Add yarn repository
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash -
 
 # Add yarn repository
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
