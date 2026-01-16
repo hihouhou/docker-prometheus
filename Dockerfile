@@ -5,14 +5,14 @@
 #
 
 # Pull base image.
-FROM debian:latest
+FROM debian:trixie
 
 LABEL org.opencontainers.image.authors="hihouhou < hihouhou@hihouhou.com >"
 
 ENV GOROOT=/usr/local/go
 ENV GOPATH=/opt/prometheus
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-ENV PROMETHEUS_VERSION=v3.7.3
+ENV PROMETHEUS_VERSION=v3.9.1
 ENV GO_VERSION=1.23.0
 ENV USER=ROOT
 
@@ -24,15 +24,17 @@ RUN apt-get update && \
 RUN curl -sL https://deb.nodesource.com/setup_22.x | bash -
 
 # Add yarn repository
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/yarn-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+#RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+#    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
 # Update & install packages yarn
 RUN apt-get update && \
     apt-get install -y yarn
 
 # Get go
-RUN wget https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz && \
+RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
     tar -xvf go${GO_VERSION}.linux-amd64.tar.gz && \
     mv go /usr/local
 
