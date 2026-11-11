@@ -9,41 +9,17 @@ FROM debian:trixie
 
 LABEL org.opencontainers.image.authors="hihouhou < hihouhou@hihouhou.com >"
 
-ENV GOROOT=/usr/local/go
-ENV GOPATH=/opt/prometheus
-ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 ENV PROMETHEUS_VERSION=v3.16.0
-ENV GO_VERSION=1.23.0
-ENV USER=ROOT
 
-# Update & install packages for prometheus build
+# Update & install packages for prometheus
 RUN apt-get update && \
-    apt-get install -y wget git make build-essential curl
-
-#Add yarn repository
-RUN curl -sL https://deb.nodesource.com/setup_22.x | bash -
-
-# Add yarn repository
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarn-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/yarn-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-#RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-#    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
-# Update & install packages yarn
-RUN apt-get update && \
-    apt-get install -y yarn
-
-# Get go
-RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
-    tar -xvf go${GO_VERSION}.linux-amd64.tar.gz && \
-    mv go /usr/local
+    apt-get install -y wget
 
 # Get prometheus from github
-RUN mkdir -p $GOPATH/src/github.com/prometheus && \
-    cd $GOPATH/src/github.com/prometheus && \
-    git clone --branch ${PROMETHEUS_VERSION} https://github.com/prometheus/prometheus.git && \
-    cd prometheus && \
-    make build
+RUN wget https://github.com/prometheus/prometheus/releases/download/${PROMETHEUS_VERSION}/prometheus-$(echo $PROMETHEUS_VERSION | cut -c2-).linux-amd64.tar.gz && \
+    tar xf prometheus-$(echo $PROMETHEUS_VERSION | cut -c2-).linux-amd64.tar.gz && \
+    mv prometheus-$(echo $PROMETHEUS_VERSION | cut -c2-).linux-amd64/prometheus /usr/local/bin/ && \
+    mkdir /etc/prometheus
 
 RUN useradd -ms /bin/bash prometheus
 
@@ -51,9 +27,7 @@ USER prometheus
 
 EXPOSE 9090
 
-WORKDIR $GOPATH/src/github.com/prometheus
+COPY your_config.yml /etc/prometheus/your_config.yml
+COPY rules.yml /etc/prometheus/rules.yml
 
-COPY your_config.yml your_config.yml
-COPY rules.yml rules.yml
-
-CMD ["./prometheus/prometheus", "--config.file=your_config.yml", "--storage.tsdb.path=/srv/prometheus"]
+CMD ["prometheus", "--config.file=/etc/prometheus/your_config.yml", "--storage.tsdb.path=/srv/prometheus"]
